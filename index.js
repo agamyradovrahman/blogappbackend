@@ -5,13 +5,17 @@ const userRoutes = require("./routers/user")
 const cloudinary = require("cloudinary");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const corsOptions = require("./config/corsOption");
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
 
+
 connectDatabase();
+app.use(cors(corsOptions));
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,

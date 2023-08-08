@@ -19,12 +19,12 @@ const postSchema = mongoose.Schema({
         {
             type: Object,
             public_id:{
-                type: URL
-                
+                type: String,
+                default: 1
             },
             url:{
-                type:String,
-                
+                type:URL,
+                default: "testing.com"
             },
         }
     ,

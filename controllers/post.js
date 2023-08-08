@@ -14,9 +14,10 @@ exports.createpost = catchAsyncError(async (req, res, next) => {
     const { secure_url: url, public_id } = await cloudinary.uploader.upload(
       file.path
     );
-    req.body.image.thumbnail = { url, public_id };
+    req.body.image = { url, public_id };
+  } else {
+    req.body.image = { url: "testing.com", public_id: 1 };
   }
-
 
   req.body.user = req.user.id;
 
@@ -40,20 +41,37 @@ exports.getAdminpost = catchAsyncError(async (req, res, next) => {
 // get All post
 exports.getAllpost = catchAsyncError(async (req, res) => {
   const resultPerPage = 8;
+  const category = req.body.category;
 
   const postCount = await Post.countDocuments();
 
-  const feature = new Features(Post.find(), req.query)
-    .search()
-    .filter()
-    .pagination(resultPerPage);
-  const post = await feature.query;
-  res.status(200).json({
-    success: true,
-    post,
-    postCount,
-    resultPerPage,
-  });
+  if (category) {
+    const feature = new Features(Post.find({ category: category }), req.query)
+      .search()
+      .filter()
+      .pagination(resultPerPage);
+    const post = await feature.query;
+
+    res.status(200).json({
+      success: true,
+      post,
+      postCount,
+      resultPerPage,
+    });
+  } else {
+    const feature = new Features(Post.find(), req.query)
+      .search()
+      .filter()
+      .pagination(resultPerPage);
+    const post = await feature.query;
+
+    res.status(200).json({
+      success: true,
+      post,
+      postCount,
+      resultPerPage,
+    });
+  }
 });
 
 // Update post ---Admin
@@ -134,5 +152,70 @@ exports.getSinglepost = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,
     post,
+  });
+});
+
+exports.getAllpostpolitic = catchAsyncError(async (req, res) => {
+  const resultPerPage = 8;
+  const category = req.body.category;
+
+  const postCount = await Post.countDocuments();
+
+  const feature = new Features(Post.find({ category: "politic" }), req.query)
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+  const post = await feature.query;
+
+  res.status(200).json({
+    success: true,
+    post,
+    postCount,
+    resultPerPage,
+  });
+});
+
+
+
+
+exports.getAllpostsport = catchAsyncError(async (req, res) => {
+  const resultPerPage = 8;
+  const category = req.body.category;
+
+  const postCount = await Post.countDocuments();
+
+  const feature = new Features(Post.find({ category: "sport" }), req.query)
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+  const post = await feature.query;
+
+  res.status(200).json({
+    success: true,
+    post,
+    postCount,
+    resultPerPage,
+  });
+});
+
+
+
+exports.getAllposteconomic = catchAsyncError(async (req, res) => {
+  const resultPerPage = 8;
+  const category = req.body.category;
+
+  const postCount = await Post.countDocuments();
+
+  const feature = new Features(Post.find({ category: "economic" }), req.query)
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+  const post = await feature.query;
+
+  res.status(200).json({
+    success: true,
+    post,
+    postCount,
+    resultPerPage,
   });
 });
